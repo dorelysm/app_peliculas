@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
+import 'package:app_peliculas/models/model_peliculas.dart';
+import 'package:app_peliculas/widgets/Card_Swiper.dart';
+import 'package:app_peliculas/providers/peliculas_providers.dart';
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
@@ -9,6 +13,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final peliculasproviders = PeliculasProviders();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,10 +23,23 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[_SwiperWidget(context)],
+          children: <Widget>[_SwipperTarjeta()],
         ),
       ),
     );
+  }
+
+  Widget _SwipperTarjeta() {
+    return FutureBuilder(
+        future: peliculasproviders.getmovies(),
+        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+          if (snapshot.hasData) {
+            return CardSwiper(
+                peliculas: snapshot.data as List<ModeloPeliculas>);
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 
   Widget _SwiperWidget(BuildContext) {
